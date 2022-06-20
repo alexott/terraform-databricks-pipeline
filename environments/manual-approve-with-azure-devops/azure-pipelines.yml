@@ -63,6 +63,12 @@ steps:
     allowTelemetryCollection: false
     workingDirectory: environments/databricks-department-clusters-pat/
 
+- script: |
+    env|sort
+  displayName: 'get debugging information'
+  workingDirectory: environments/databricks-department-clusters-pat/
+  enabled: 'true'
+    
 - task: TerraformCLI@0
   displayName: 'Terraform plan'
   env:
