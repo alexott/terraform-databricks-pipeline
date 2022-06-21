@@ -67,7 +67,6 @@ steps:
 
 - task: AzureCLI@2
   displayName: 'Terraform init'
-  workingDirectory: environments/manual-approve-with-azure-devops/
   enabled: 'true'
   inputs:
     scriptType: bash
@@ -76,6 +75,7 @@ steps:
     addSpnToEnvironment: true
     inlineScript: |
       echo "ARM_CLIENT_ID='$ARM_CLIENT_ID' ARM_CLIENT_SECRET='$ARM_CLIENT_SECRET' ARM_TENANT_ID='$ARM_TENANT_ID'"
+      cd environments/manual-approve-with-azure-devops/
       terraform init \
         -backend-config="resource_group_name=$BACKEND_RG_NAME" \
         -backend-config="storage_account_name=$BACKEND_SA_NAME" \
