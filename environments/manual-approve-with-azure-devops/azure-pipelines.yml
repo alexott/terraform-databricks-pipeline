@@ -34,6 +34,7 @@ steps:
     curl -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
     chmod a+x terraform
+    mv terraform ~/
     ~/terraform -version
   displayName: 'Install Terraform'
 
