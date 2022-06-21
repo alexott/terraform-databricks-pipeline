@@ -52,7 +52,7 @@ steps:
   inputs:
     scriptType: bash
     scriptLocation: inlineScript
-    azureSubscription: '${{ variables.SERVICE_CONNECTION_NAME }}'
+    azureSubscription: $(SERVICE_CONNECTION_NAME)
     addSpnToEnvironment: true
     inlineScript: |
       env | sort
