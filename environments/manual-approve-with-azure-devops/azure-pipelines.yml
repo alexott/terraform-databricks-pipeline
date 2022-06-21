@@ -29,54 +29,57 @@ steps:
 
 - checkout: self
 
-- task: TerraformInstaller@0
-  inputs:
-    terraformVersion: '1.0.11'
+- script: |
+    echo "Working in $(pwd)"
+    curl -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+    chmod a+x terraform
+    ~/terraform -version
   displayName: 'Install Terraform'
 
-- script: |
-    echo "[DEFAULT]" >> ~/.databrickscfg
-    echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
-    echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
-  env:
-    DATABRICKS_HOST: $(DATABRICKS_HOST)
-    DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
-  displayName: 'Set up Databricks CLI profile for Terraform provider'
+# - script: |
+#     echo "[DEFAULT]" >> ~/.databrickscfg
+#     echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+#     echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
+#   env:
+#     DATABRICKS_HOST: $(DATABRICKS_HOST)
+#     DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
+#   displayName: 'Set up Databricks CLI profile for Terraform provider'
 
-- script: |
-    terraform fmt -check
-  displayName: 'Check formatting of Terraform code'
-  workingDirectory: environments/manual-approve-with-azure-devops/
-  enabled: 'true'
+# - script: |
+#     terraform fmt -check
+#   displayName: 'Check formatting of Terraform code'
+#   workingDirectory: environments/manual-approve-with-azure-devops/
+#   enabled: 'true'
 
-- task: TerraformCLI@0
-  displayName: 'Terraform init'
-  inputs:
-    command: 'init'
-    commandOptions: '-input=false -no-color'
-    backendType: 'azurerm'
-    backendServiceArm: $(SERVICE_CONNECTION_NAME)
-    backendAzureRmResourceGroupName: $(BACKEND_RG_NAME)
-    backendAzureRmStorageAccountName: $(BACKEND_SA_NAME)
-    backendAzureRmContainerName: $(BACKEND_CONTAINER_NAME)
-    backendAzureRmKey: $(BACKEND_KEY)
-    allowTelemetryCollection: false
-    workingDirectory: environments/manual-approve-with-azure-devops/
+# - task: TerraformCLI@0
+#   displayName: 'Terraform init'
+#   inputs:
+#     command: 'init'
+#     commandOptions: '-input=false -no-color'
+#     backendType: 'azurerm'
+#     backendServiceArm: $(SERVICE_CONNECTION_NAME)
+#     backendAzureRmResourceGroupName: $(BACKEND_RG_NAME)
+#     backendAzureRmStorageAccountName: $(BACKEND_SA_NAME)
+#     backendAzureRmContainerName: $(BACKEND_CONTAINER_NAME)
+#     backendAzureRmKey: $(BACKEND_KEY)
+#     allowTelemetryCollection: false
+#     workingDirectory: environments/manual-approve-with-azure-devops/
 
-- task: TerraformCLI@0
-  displayName: 'Terraform validate'
-  inputs:
-    command: 'validate'
-    commandOptions: '-no-color'
-    environmentServiceName: $(SERVICE_CONNECTION_NAME)
-    allowTelemetryCollection: false
-    workingDirectory: environments/manual-approve-with-azure-devops/
+# - task: TerraformCLI@0
+#   displayName: 'Terraform validate'
+#   inputs:
+#     command: 'validate'
+#     commandOptions: '-no-color'
+#     environmentServiceName: $(SERVICE_CONNECTION_NAME)
+#     allowTelemetryCollection: false
+#     workingDirectory: environments/manual-approve-with-azure-devops/
 
-- task: TerraformCLI@0
-  displayName: 'Terraform plan'
-  inputs:
-    command: 'plan'
-    commandOptions: '-lock=false -input=false -no-color'
-    environmentServiceName: $(SERVICE_CONNECTION_NAME)
-    allowTelemetryCollection: false
-    workingDirectory: environments/manual-approve-with-azure-devops/
+# - task: TerraformCLI@0
+#   displayName: 'Terraform plan'
+#   inputs:
+#     command: 'plan'
+#     commandOptions: '-lock=false -input=false -no-color'
+#     environmentServiceName: $(SERVICE_CONNECTION_NAME)
+#     allowTelemetryCollection: false
+#     workingDirectory: environments/manual-approve-with-azure-devops/
