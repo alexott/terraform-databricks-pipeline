@@ -29,15 +29,21 @@ steps:
 
 - checkout: self
 
-- script: |
-    echo "Working in $(pwd) path=$PATH"
-    curl -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-    chmod a+x terraform
-    mv terraform ~/
-    ~/terraform -version
-  displayName: 'Install Terraform'
+# - script: |
+#     echo "Working in $(pwd) path=$PATH"
+#     curl -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+#     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+#     chmod a+x terraform
+#     mv terraform ~/
+#     ~/terraform -version
+#   displayName: 'Install Terraform'
 
+- script: |
+    brew tap hashicorp/tap
+    brew install hashicorp/tap/terraform
+    terraform -version
+  displayName: 'Install Terraform'
+  
 # - script: |
 #     echo "[DEFAULT]" >> ~/.databrickscfg
 #     echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
@@ -59,7 +65,7 @@ steps:
 
 - script: |
     echo "Working in $(pwd) path=$PATH"
-    ~/terraform fmt -check
+    terraform fmt -check
   displayName: 'Check formatting of Terraform code'
   workingDirectory: environments/manual-approve-with-azure-devops/
   enabled: 'true'
