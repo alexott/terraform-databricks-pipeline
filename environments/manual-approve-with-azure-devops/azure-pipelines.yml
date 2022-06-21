@@ -44,15 +44,6 @@ steps:
     terraform -version
   displayName: 'Install Terraform'
   
-# - script: |
-#     echo "[DEFAULT]" >> ~/.databrickscfg
-#     echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
-#     echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
-#   env:
-#     DATABRICKS_HOST: $(DATABRICKS_HOST)
-#     DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
-#   displayName: 'Set up Databricks CLI profile for Terraform provider'
-
 - task: AzureCLI@2
   displayName: 'Azure CLI, with SPN info'
   inputs:
@@ -61,10 +52,12 @@ steps:
     azureSubscription: $(SERVICE_CONNECTION_NAME)
     addSpnToEnvironment: true
     inlineScript: |
-      env | sort
+      echo "##vso[task.setvariable variable=ARM_CLIENT_ID]${servicePrincipalId}"
+      echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=true]${servicePrincipalKey}"
+      echo "##vso[task.setvariable variable=ARM_TENANT_ID]${tenantId}"
 
 - script: |
-    echo "Working in $(pwd) path=$PATH"
+    echo "$ARM_CLIENT_ID $ARM_CLIENT_SECRET $ARM_TENANT_ID"
     terraform fmt -check
   displayName: 'Check formatting of Terraform code'
   workingDirectory: environments/manual-approve-with-azure-devops/
