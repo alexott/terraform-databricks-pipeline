@@ -47,7 +47,18 @@ steps:
 #     DATABRICKS_TOKEN: $(DATABRICKS_TOKEN)
 #   displayName: 'Set up Databricks CLI profile for Terraform provider'
 
+- task: AzureCLI@2
+  displayName: 'Azure CLI, with SPN info'
+  inputs:
+    scriptType: bash
+    scriptLocation: inlineScript
+    azureSubscription: '${{ variables.SERVICE_CONNECTION_NAME }}'
+    addSpnToEnvironment: true
+    inlineScript: |
+      env | sort
+
 - script: |
+    echo "Working in $(pwd) path=$PATH"
     ~/terraform fmt -check
   displayName: 'Check formatting of Terraform code'
   workingDirectory: environments/manual-approve-with-azure-devops/
