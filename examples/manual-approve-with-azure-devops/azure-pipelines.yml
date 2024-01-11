@@ -42,6 +42,7 @@ steps:
   enabled: 'true'
 
 - script: |
+    env
     terraform init -input=false -no-color \
       -backend-config="resource_group_name=$BACKEND_RG_NAME" \
       -backend-config="storage_account_name=$BACKEND_SA_NAME" \
